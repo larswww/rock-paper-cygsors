@@ -1,13 +1,20 @@
 const controller = require('./controller')
-
+const { player } = require('./schema')
 
 module.exports = function (fastify, opts, next) {
 
-  fastify.get('/:id', {}, controller.get)
+  fastify.post('/', {
+    // https://www.fastify.io/docs/v1.13.x/Validation-and-Serialization/
+    schema: {
+      body: player
+    }
+  }, controller.post)
 
-  fastify.post('/', {}, controller.post)
+  // fastify.get('/:id', {}, controller.get)
 
-  fastify.put('/:id/move', {}, controller.put)
+
+
+  // fastify.put('/:id/move', {}, controller.put)
 
   next()
 }
