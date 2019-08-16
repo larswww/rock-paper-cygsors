@@ -1,9 +1,9 @@
-const keyv = require('keyv')
-const fastify = require('fastify')({ logger: true })
+const keyv = require('keyv') //https://github.com/lukechilds/keyv
+const fastify = require('fastify')({ logger: true }) //https://www.fastify.io/docs/v1.13.x/Getting-Started/
 
-const gamesDao = require('./components/games/dao')
+const gamesDao = require('./resources/games/dao')
 
-const gamesRouter = require('./components/games/router')
+const gamesRouter = require('./resources/games/router')
 fastify.register(gamesRouter, { prefix: '/api/games'})
 
 const start = async () => {
