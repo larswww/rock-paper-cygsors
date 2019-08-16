@@ -1,0 +1,32 @@
+{
+  "name": "rock-paper-cygsors",
+  "version": "1.0.0",
+  "description": "take home assignment",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "standard": {
+    "env": ["mocha"]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larswww/rock-paper-cygsors.git"
+  },
+  "keywords": [
+    "REST",
+    "API"
+  ],
+  "author": "larswww",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/larswww/rock-paper-cygsors/issues"
+  },
+  "homepage": "https://github.com/larswww/rock-paper-cygsors#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^6.2.0",
+    "standard": "^13.1.0"
+  }
+}
