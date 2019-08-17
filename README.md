@@ -4,11 +4,11 @@ take-home coding challenge; REST API
 
 
 ### Usage
-
+Please note requires Node 8 and higher due to ES6 syntax w/o babel!
 ```$xslt
-1. git clone https://github.com/larswww/rock-paper-cygsors.git
+1. git clone https://github.com/larswww/rock-paper-cygsors.git && cd rock-paper-cygsors
 2. npm install
-3. npm start
+3. npm run start
 ```
 
 
@@ -22,7 +22,7 @@ OR
 ```
 
 ### Endpoints
-In short I simplified the original requirements into 3 calls
+In short I simplified the original requirements into 3 calls. Endpoints will return REST compliant status codes and headers.
 
 ```$xslt 
 POST /api/games
