@@ -46,7 +46,7 @@ GET /api/games/{id}
 * In-memory store: [Keyv](https://www.npmjs.com/package/keyv) 
 * Implemented Rock Paper Scissors as my own separate npm module [Sten-Sax-Pase](https://www.npmjs.com/package/sten-sax-pase)
 
-####Dev dependencies
+#### Dev dependencies
 * Testing with [Mocha](https://mochajs.org/) using [Chai](https://www.chaijs.com/) for assertions and [Chai-Http](https://www.chaijs.com/plugins/chai-http/)
  plugin for simple intergration tests
 * [Javascript Standard Style](https://www.npmjs.com/package/standard) for linting
