@@ -21,6 +21,18 @@ OR
 - npm run e2e (intergration only)
 ```
 
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/380e0e3fb992c2f61e61)
+
+### Curl Commands
+```$xslt
+curl -H "Content-Type: application/json" -d '{"name":"Lars", "move":"rock"}' http://localhost:3000/api/games
+
+(Don't forget to replace the id with id return from first call in subsequent two calls)
+curl -X PUT -H "Content-Type: application/json" -d '{"name":"Pete", "move":"paper"}' http://localhost:3000/api/games/ee38d234-1c42-4771-96bc-b65f699aa2ad/move
+curl http://localhost:3000/api/games/ee38d234-1c42-4771-96bc-b65f699aa2ad
+
+```
+
 ### Endpoints
 In short I simplified the original requirements into 3 calls. Endpoints will return REST compliant status codes and headers.
 
@@ -67,16 +79,6 @@ GET /api/games/{id}
     └── games
         ├── intergration.test.js
         └── unit.test.js
-```
-
-### Curl Commands
-```$xslt
-curl -H "Content-Type: application/json" -d '{"name":"Lars", "move":"rock"}' http://localhost:3000/api/games
-
-(Don't forget to replace the id with id return from first call in subsequent two calls)
-curl -X PUT -H "Content-Type: application/json" -d '{"name":"Pete", "move":"paper"}' http://localhost:3000/api/games/ee38d234-1c42-4771-96bc-b65f699aa2ad/move
-curl http://localhost:3000/api/games/ee38d234-1c42-4771-96bc-b65f699aa2ad
-
 ```
 
 
