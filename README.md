@@ -52,9 +52,10 @@ GET /api/games/{id}
 
 
 
-### Dependencies
+### Direct Dependencies
 
 * Web Framework: [Fastify](https://www.fastify.io/) and [Fastify-rate-limit](https://github.com/fastify/fastify-helmet) plugin
+* [UUID](https://www.npmjs.com/package/uuid) (v4)
 * In-memory store: [Keyv](https://www.npmjs.com/package/keyv) 
 * Implemented Rock Paper Scissors as my own separate npm module [Sten-Sax-Pase](https://www.npmjs.com/package/sten-sax-pase)
 
