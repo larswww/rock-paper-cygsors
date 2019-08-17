@@ -10,11 +10,9 @@ module.exports = function (fastify, opts, next) {
     }
   }, controller.post)
 
-  // fastify.get('/:id', {}, controller.get)
+  fastify.get('/:id', controller.get)
 
-
-
-  // fastify.put('/:id/move', {}, controller.put)
+  fastify.put('/:id/move', controller.put)
 
   next()
 }
