@@ -9,9 +9,11 @@ take-home coding challenge; REST API
 1. git clone https://github.com/larswww/rock-paper-cygsors.git
 2. npm install
 3. npm start
+```
 
 
-In order to run tests:
+### Tests
+```$xslt
 (make sure the app isn't already running)
 - npm run test (intergration and unit)
 OR
