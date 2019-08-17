@@ -4,14 +4,17 @@
   "description": "take home assignment",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server",
-    "test": "mocha ./node_modules/mocha/bin/mocha test/**/*.test.js --reporter spec",
+    "start": "node src/index",
+    "test": "npm run unit && npm run e2e",
     "e2e": "mocha ./node_modules/mocha/bin/mocha test/**/*intergration.test.js --reporter spec",
     "unit": "mocha ./node_modules/mocha/bin/mocha test/**/*unit.test.js --reporter spec"
   },
   "standard": {
     "env": [
       "mocha"
+    ],
+    "ignore": [
+      "src/resources/games/schema.js"
     ]
   },
   "repository": {
@@ -37,6 +40,7 @@
   "dependencies": {
     "dotenv": "^8.0.0",
     "fastify": "^2.7.1",
+    "fastify-rate-limit": "2.2.0",
     "keyv": "^3.1.0",
     "sten-sax-pase": "1.0.0",
     "uuid": "^3.3.2"

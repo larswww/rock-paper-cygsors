@@ -6,61 +6,75 @@ module.exports.post = async (request, reply) => {
   const { name, move } = request.body
   const id = uuidv4()
 
-  const saveResult = await gamesDao.setGame(id, {playerOne: { name, move }})
+  await gamesDao.setGame(id, { playerOne: { name, move } })
 
-  reply // https://www.fastify.io/docs/v1.13.x/Reply/
-    .code(201)
+  reply.code(201) // https://www.fastify.io/docs/v1.13.x/Reply/
     .header('Content-Type', 'application/json')
     .header('Cache-Control', 'no-cache')
-    .header('last-modified', new Date().toString())
-    .send({ id, name })
+
+  return {
+    id,
+    name,
+    links: {
+      "href": `${id}/move`,
+      "rel": "games",
+      "type": "PUT"
+    }
+  }
 }
 
 module.exports.put = async (request, reply) => {
   const { id } = request.params
-  const { name, move } = request.body
 
   const savedGame = await gamesDao.getGame(id)
-  if (!savedGame) return reply.code(404).send({message: `No game with id ${id}`})
+  if (!savedGame) {
+    reply.code(404)
+    return { message: `No game with id ${id}` }
+  }
 
   let { playerOne, playerTwo, message } = savedGame
-  if (playerOne && playerTwo && message) return reply.code(200).send(savedGame)
+  const gameIsAlreadyComplete = playerOne && playerTwo && message
+  if (gameIsAlreadyComplete) {
+    reply.code(200)
+    return savedGame
+  }
 
+  const { name, move } = request.body
   playerTwo = { name, move }
   playerOne.outcome = rockPaperScissors.play(playerOne.move, playerTwo.move)
   playerTwo.outcome = rockPaperScissors.play(playerTwo.move, playerOne.move)
   message = rockPaperScissors.message(playerOne, playerTwo)
 
   const gameResult = { playerOne, playerTwo, message }
-  await gamesDao.updateGame(id, gameResult)
+  await gamesDao.updateGame(id, { ...gameResult, lastModified: new Date().toString() })
 
-  return reply
+  reply
     .code(201)
     .header('Content-Type', 'application/json')
     .header('Cache-Control', 'no-cache')
-    .send(gameResult)
+  return gameResult
 }
 
 module.exports.get = async (request, reply) => {
   const { id } = request.params
 
   const savedGame = await gamesDao.getGame(id)
-  if (!savedGame) return reply.code(404).send({message: `No game with id ${id}`})
-
-  if (!savedGame.message) {
-    return reply
-      .code(200)
-      .header('Cache-Control', 'no-cache')
-      .header('Content-Type', 'application/json')
-      .send({message: `${savedGame.playerOne.name} is waiting for opponent!`, id})
+  if (!savedGame) {
+    reply.code(404)
+    return { message: `No game with id ${id}` }
   }
 
-  if (savedGame.message) {
-    return reply
-      .code(200)
-      .header('Cache-Control', process.env.TTL)
-      .header('Content-Type', 'application/json')
-      .send(savedGame)
-  }
+  reply.code(200)
+    .header('Cache-Control', 'no-cache')
+    .header('Content-Type', 'application/json')
 
+  const gameIsStillWaitingForSecondMove = !savedGame.message
+  if (gameIsStillWaitingForSecondMove) {
+    return { message: `${savedGame.playerOne.name} is waiting for opponent!`, id }
+  } else {
+    reply
+      .header('Last-Modified', savedGame.lastModified)
+      .header('Cache-Control', `max-age=${process.env.MAX_AGE}`)
+    return savedGame
+  }
 }

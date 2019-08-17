@@ -2,7 +2,6 @@ const controller = require('./controller')
 const { player } = require('./schema')
 
 module.exports = function (fastify, opts, next) {
-
   fastify.post('/', {
     // https://www.fastify.io/docs/v1.13.x/Validation-and-Serialization/
     schema: {
