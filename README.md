@@ -69,8 +69,9 @@ GET /api/games/{id}
 ```$xslt
 ├── src  
 │   ├── resources
-│   │   └── games                   
-│   │       ├── controller.js
+│   │   └── games
+│   │       ├── model.js
+│   │       ├── api.js
 │   │       ├── dao.js              
 │   │       ├── router.js
 │   │       └── schema.js           
