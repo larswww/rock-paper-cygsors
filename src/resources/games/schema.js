@@ -1,3 +1,4 @@
+'use strict'
 // https://json-schema.org/
 
 const player = {
@@ -14,6 +15,16 @@ const player = {
     },
   },
   "required": ["move", "name"]
+}
+
+
+const game = {
+  "type": "object",
+  "properties": {
+    "playerOne": player,
+    "playerTwo": player,
+    "message": "string"
+  }
 
 }
 

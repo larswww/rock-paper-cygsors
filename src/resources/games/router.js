@@ -1,4 +1,5 @@
-const controller = require('./controller')
+'use strict'
+const controller = require('./api')
 const { player } = require('./schema')
 
 module.exports = function (fastify, opts, next) {
