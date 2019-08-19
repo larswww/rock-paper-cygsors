@@ -1,3 +1,4 @@
+'use strict'
 let games
 
 module.exports = class gamesDao {

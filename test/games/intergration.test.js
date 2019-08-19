@@ -15,22 +15,22 @@ describe('Games Intergration Tests', async () => {
     url = `http://localhost:${process.env.SERVER_PORT}` // to run test suite against production change this to prod url
   })
 
-  after(() => {
-    process.exit(0)
-  })
-
   describe('POST', async () => {
     it('Should create a new game returning correct body and correct REST response', async () => {
       const res = await chai.request(url).post('/api/games').send({ name: 'Lars', move: 'rock' })
-      expect(res).to.have.status(201)
 
-      expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
-      expect(res).to.have.header('date')
-      expect(res).to.have.header('cache-control', 'no-cache')
+      it('Status & Headers', async () => {
+        expect(res).to.have.status(201)
+        expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
+        expect(res).to.have.header('date')
+        expect(res).to.have.header('cache-control', 'no-cache')
+      })
 
-      expect(res.body).to.have.property('id')
-      expect(res.body).to.have.property('name')
-      expect(res.body).to.not.have.property('move')
+      it('body', async () => {
+        expect(res.body).to.have.property('id')
+        expect(res.body).to.have.property('name')
+        expect(res.body).to.not.have.property('move')
+      })
     })
 
     it('Should return status 400 if body is bad input or missing', async () => {
@@ -66,7 +66,7 @@ describe('Games Intergration Tests', async () => {
       expect(res).to.have.status(200)
       expect(res.body.id).to.equal(id)
       expect(res.body).to.not.have.property('move')
-      expect(res.body.message).to.equal(`${playerOne.name} is waiting for opponent!`)
+      expect(res.body.message).to.equal(`${playerOne.name} is waiting for move!`)
     })
 
     it('Should GET a finished game with correct body & headers', async () => {
@@ -116,6 +116,12 @@ describe('Games Intergration Tests', async () => {
       expect(putPlayerTwoMove.body.playerTwo.outcome).to.equal('LOSE')
     })
   })
+
+  after(() => {
+    process.exit(0)
+  })
+
+
 })
 
 async function postOneGame () { return await chai.request(url).post('/api/games').send(playerOne) }
