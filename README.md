@@ -11,7 +11,6 @@ Please note requires Node 8 and higher due to ES6 syntax w/o babel!
 3. npm run start
 ```
 
-
 ### Tests
 ```$xslt
 (make sure the app isn't already running)
@@ -20,7 +19,6 @@ OR
 - npm run unit (unit only)
 - npm run e2e (intergration only)
 ```
-
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/380e0e3fb992c2f61e61)
 
 ### Curl Commands
@@ -30,7 +28,6 @@ curl -H "Content-Type: application/json" -d '{"name":"Lars", "move":"rock"}' htt
 (Don't forget to replace the id with id return from first call in subsequent two calls)
 curl -X PUT -H "Content-Type: application/json" -d '{"name":"Pete", "move":"paper"}' http://localhost:3000/api/games/ee38d234-1c42-4771-96bc-b65f699aa2ad/move
 curl http://localhost:3000/api/games/ee38d234-1c42-4771-96bc-b65f699aa2ad
-
 ```
 
 ### Endpoints
@@ -50,22 +47,20 @@ PUT /api/games/{id}/move
 GET /api/games/{id}
 ```
 
-
-
-### Direct Dependencies
-
-* Web Framework: [Fastify](https://www.fastify.io/) and [Fastify-rate-limit](https://github.com/fastify/fastify-helmet) plugin
+### Direct dependencies
+* Web framework: [Fastify](https://www.fastify.io/) and [Fastify-rate-limit](https://github.com/fastify/fastify-helmet) plugin
 * [UUID](https://www.npmjs.com/package/uuid) (v4)
 * In-memory store: [Keyv](https://www.npmjs.com/package/keyv) 
 * Implemented Rock Paper Scissors as my own separate npm module [Sten-Sax-Pase](https://www.npmjs.com/package/sten-sax-pase)
 
 #### Dev dependencies
-* Testing with [Mocha](https://mochajs.org/) using [Chai](https://www.chaijs.com/) for assertions and [Chai-Http](https://www.chaijs.com/plugins/chai-http/)
- plugin for simple intergration tests
+* Test framework: [Mocha](https://mochajs.org/) 
+* [Chai](https://www.chaijs.com/) for assertions 
+* [Chai-Http](https://www.chaijs.com/plugins/chai-http/) plugin for simple intergration tests
 * [Javascript Standard Style](https://www.npmjs.com/package/standard) for linting
  
 ### Structure
-
+Resource based structure 
 ```$xslt
 ├── src  
 │   ├── resources
