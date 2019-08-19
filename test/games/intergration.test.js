@@ -19,17 +19,19 @@ describe('Games Intergration Tests', async () => {
     it('Should create a new game returning correct body and correct REST response', async () => {
       const res = await chai.request(url).post('/api/games').send({ name: 'Lars', move: 'rock' })
 
-      it('Status & Headers', async () => {
+      it('status & headers', done => {
         expect(res).to.have.status(201)
         expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
         expect(res).to.have.header('date')
         expect(res).to.have.header('cache-control', 'no-cache')
+        done()
       })
 
-      it('body', async () => {
+      it('body', done => {
         expect(res.body).to.have.property('id')
         expect(res.body).to.have.property('name')
         expect(res.body).to.not.have.property('move')
+        done()
       })
     })
 
@@ -63,10 +65,16 @@ describe('Games Intergration Tests', async () => {
       const id = resWithIdForGame.body.id
       const res = await chai.request(url).get(`/api/games/${id}`)
 
-      expect(res).to.have.status(200)
-      expect(res.body.id).to.equal(id)
-      expect(res.body).to.not.have.property('move')
-      expect(res.body.message).to.equal(`${playerOne.name} is waiting for move!`)
+      it('status', done => {
+        expect(res).to.have.status(200)
+        done()
+      })
+
+      it('body', done => {
+        expect(res.body.id).to.equal(id)
+        expect(res.body).to.not.have.property('move')
+        expect(res.body.message).to.equal(`${playerOne.name} is waiting for move!`)
+      })
     })
 
     it('Should GET a finished game with correct body & headers', async () => {
@@ -75,14 +83,22 @@ describe('Games Intergration Tests', async () => {
       await chai.request(url).put(`/api/games/${id}/move`).send(playerTwo)
       const finishedGame = await chai.request(url).get(`/api/games/${id}`)
 
-      expect(finishedGame).to.have.status(200)
-      expect(finishedGame).to.have.header('Last-Modified')
-      expect(finishedGame).to.have.header('Cache-Control', `max-age=${process.env.MAX_AGE}`)
-      expect(finishedGame.body).to.have.property('message')
-      expect(finishedGame.body).to.have.property('playerOne')
-      expect(finishedGame.body).to.have.property('playerTwo')
-      expect(finishedGame.body.playerOne.name).to.equal(playerOne.name)
-      expect(finishedGame.body.playerTwo.name).to.equal(playerTwo.name)
+      it('status & headers', done => {
+        expect(finishedGame).to.have.status(200)
+        expect(finishedGame).to.have.header('Last-Modified')
+        expect(finishedGame).to.have.header('Cache-Control', `max-age=${process.env.MAX_AGE}`)
+        done()
+      })
+
+      it('body', done => {
+        expect(finishedGame.body).to.have.property('message')
+        expect(finishedGame.body).to.have.property('playerOne')
+        expect(finishedGame.body).to.have.property('playerTwo')
+        expect(finishedGame.body.playerOne.name).to.equal(playerOne.name)
+        expect(finishedGame.body.playerTwo.name).to.equal(playerTwo.name)
+        done()
+      })
+
     })
 
     it('Should reply 404 for id of correct UUID length but with no game', async () => {
@@ -98,8 +114,8 @@ describe('Games Intergration Tests', async () => {
     it('Should be idempotent i.e. subsequent repeat calls code is 200 not 201', async () => {
       const game = await postOneGame()
       const putPlayerTwoMove = await chai.request(url).put(`/api/games/${game.body.id}/move`).send(playerTwo)
-
       expect(putPlayerTwoMove).to.have.status(201)
+
       const identicalCall = await chai.request(url).put(`/api/games/${game.body.id}/move`).send(playerTwo)
       expect(identicalCall).to.have.status(200)
     })
@@ -108,12 +124,18 @@ describe('Games Intergration Tests', async () => {
       const game = await postOneGame()
       const putPlayerTwoMove = await chai.request(url).put(`/api/games/${game.body.id}/move`).send(playerTwo)
 
-      expect(putPlayerTwoMove).to.have.status(201)
-      expect(putPlayerTwoMove.body).to.have.property('playerOne')
-      expect(putPlayerTwoMove.body).to.have.property('playerTwo')
-      expect(putPlayerTwoMove.body).to.have.property('message')
-      expect(putPlayerTwoMove.body.playerOne.outcome).to.equal('WIN')
-      expect(putPlayerTwoMove.body.playerTwo.outcome).to.equal('LOSE')
+      it('status', done => {
+        expect(putPlayerTwoMove).to.have.status(201)
+      })
+
+      it('body', done => {
+        expect(putPlayerTwoMove.body).to.have.property('playerOne')
+        expect(putPlayerTwoMove.body).to.have.property('playerTwo')
+        expect(putPlayerTwoMove.body).to.have.property('message')
+        expect(putPlayerTwoMove.body.playerOne.outcome).to.equal('WIN')
+        expect(putPlayerTwoMove.body.playerTwo.outcome).to.equal('LOSE')
+      })
+
     })
   })
 

@@ -40,9 +40,9 @@ module.exports.put = async (request, reply) => {
     return game
   }
 
-  const shouldReturnSavedGame = await games.isCompleteGame(id)
+  const shouldReturnSavedGame = await games.isCompletedGame(id)
   if (shouldReturnSavedGame) { // todo is this good
-    let game = await games.getCompleteGame(id)
+    let game = await games.getCompletedGame(id)
     reply.code(200)
     return game
   }
@@ -65,10 +65,18 @@ module.exports.get = async (request, reply) => {
   if (shouldSendPlayerWaitingMessage) {
     reply.header('Cache-Control', 'no-cache')
     const playerOneName = await games.getPlayerOneName(id)
-    return { message: `${playerOneName} is waiting for move!`, id }
+    return {
+      message: `${playerOneName} is waiting for move!`,
+      id,
+      links: {
+        'href': `${id}/move`,
+        'rel': 'games',
+        'type': 'PUT'
+      }
+    }
   }
 
-  const game = await games.getCompleteGame(id)
+  const game = await games.getCompletedGame(id)
   reply
     .header('Last-Modified', game.lastModified)
     .header('Cache-Control', `max-age=${process.env.MAX_AGE}`)

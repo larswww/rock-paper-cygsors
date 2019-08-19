@@ -1,6 +1,6 @@
 'use strict'
 const controller = require('./api')
-const { player, game } = require('./schema')
+const { player, game, message, links } = require('./schema')
 
 module.exports = function (fastify, opts, next) {
   fastify.post('/', {
@@ -10,7 +10,20 @@ module.exports = function (fastify, opts, next) {
     }
   }, controller.post)
 
-  fastify.get('/:id',controller.get)
+  fastify.get('/:id', {
+    schema: {
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            game,
+            links,
+            message
+          }
+        }
+      }
+    }
+  }, controller.get)
 
   fastify.put('/:id/move', controller.put)
 

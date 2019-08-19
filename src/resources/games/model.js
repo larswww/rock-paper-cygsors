@@ -31,12 +31,12 @@ module.exports = class Games {
     return !!(playerOne.move && playerTwo.move && message)
   }
 
-  static async isCompleteGame(id) {
+  static async isCompletedGame(id) {
     const game = await this.getGame(id)
     return this.gameIsComplete(game)
   }
 
-  static async getCompleteGame(id) {
+  static async getCompletedGame(id) {
     const game = await this.getGame(id)
     if (!this.gameIsComplete(game)) throw new Error('Game not complete')
     return game
