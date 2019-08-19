@@ -29,4 +29,4 @@ const game = {
 }
 
 
-module.exports = { player }
+module.exports = { player, game }
