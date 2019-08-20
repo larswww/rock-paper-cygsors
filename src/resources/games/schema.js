@@ -1,20 +1,32 @@
 'use strict'
 // https://json-schema.org/
+//todo forgot outcome in the schema!
+const name = {
+  'type': 'string',
+  'minLength': 1,
+  'maxLength': 100
+}
+
+const move = {
+  'type': 'string',
+  'enum': ['rock', 'paper', 'scissors', 'Rock', 'Paper', 'Scissors', 'ROCK', 'PAPER', 'SCISSORS']
+}
 
 const player = {
   'type': 'object',
   'properties': {
-    'move': {
-      'type': 'string',
-      'enum': ['rock', 'paper', 'scissors', 'ROCK', 'PAPER', 'SCISSORS']
-    },
-    'name': {
-      'type': 'string',
-      'minLength': 1,
-      'maxLength': 100
-    },
+    move,
+    name
   },
   'required': ['move', 'name']
+}
+
+const message = {
+  'type': 'string'
+}
+
+const id = {
+  'type': 'string'
 }
 
 const game = {
@@ -22,8 +34,17 @@ const game = {
   'properties': {
     'playerOne': player,
     'playerTwo': player,
-    'message': { 'type': 'string' }
-  }
+  },
+  'required': ['playerOne', 'playerTwo']
+}
+
+const responseWithGame = {
+  'type': 'object',
+  'properties': {
+    game,
+    message,
+    id
+  },
 }
 
 const links = {
@@ -38,8 +59,4 @@ const links = {
   }
 }
 
-const message = {
-  'type': 'string'
-}
-
-module.exports = { player, game, links, message }
+module.exports = { player, responseWithGame, links, message }

@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node src/index",
     "test": "npm run unit && npm run e2e",
-    "e2e": "mocha ./node_modules/mocha/bin/mocha test/**/*intergration.test.js --reporter spec",
-    "unit": "mocha ./node_modules/mocha/bin/mocha test/**/*unit.test.js --reporter spec"
+    "e2e": "mocha ./node_modules/mocha/bin/mocha test/**/*intergration.test.js --reporter spec --exit",
+    "unit": "mocha ./node_modules/mocha/bin/mocha test/**/*unit.test.js --reporter spec --exit"
   },
   "standard": {
     "env": [

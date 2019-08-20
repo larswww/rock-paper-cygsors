@@ -1,6 +1,12 @@
 'use strict'
 let games
 
+/**
+ * gamesDao is not async when using local in memory store i.e. 'new keyv()'
+   - it is written as async anyway. So that if 'new keyv()' is passed a dynamoDb
+ or Redis connection, and everything will still work in production without further changes
+ */
+
 module.exports = class gamesDao {
   static async injectDb (db) {
     if (games) return

@@ -1,7 +1,9 @@
 'use strict'
 const keyv = require('keyv') // https://github.com/lukechilds/keyv
 // https://www.fastify.io/docs/v1.13.x/Getting-Started/
-const fastify = require('fastify')({ logger: true }) // pass { logger: true } to enable logging to console
+// https://www.fastify.io/docs/latest/Logging/
+// add/remove { logger: true } to require('fastify')({ logger: true}) to enable logging to console
+const fastify = require('fastify')({ logger: true })
 const rateLimit = require('fastify-rate-limit')
 
 fastify.register(rateLimit, {
@@ -16,12 +18,7 @@ fastify.register(gamesRouter, { prefix: '/api/games' })
 
 const start = async () => {
   try {
-    /* gamesDao is not async when using local in memory store i.e. 'new keyv()'
-        - it is treated as as async anyway. So that if 'new keyv()' can be passed a dynamoDb
-          or Redis connection, and everything will work in production without further changes
-
-       If adding other resources with async dependencies inject them here first as with gamesDao
-     */
+    // If adding other resources with async dependencies i.e. db connections etc and similar inject them here
     await gamesDao.injectDb(new keyv())
     await fastify.listen(process.env.SERVER_PORT)
     fastify.log.info(`server listening on ${fastify.server.address().port}`)
