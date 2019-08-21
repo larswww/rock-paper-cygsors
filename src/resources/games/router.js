@@ -2,7 +2,7 @@
 const controller = require('./api')
 const model = require('./model')
 controller.injectModel(model)
-const { player, responseWithGame, links } = require('./schema')
+const { player, links, game, message, id } = require('./schema')
 
 module.exports = function (fastify, opts, next) {
   fastify.post('/', {
@@ -15,8 +15,13 @@ module.exports = function (fastify, opts, next) {
     schema: {
       response: {
         200: {
-          ...responseWithGame,
-          ...links
+          type: 'object',
+          properties: {
+            game,
+            message,
+            links,
+            id
+          }
         }
       }
     }
@@ -27,8 +32,13 @@ module.exports = function (fastify, opts, next) {
       body: player,
       response: {
         '2xx': {
-          ...responseWithGame,
-          ...links
+          type: 'object',
+          properties: {
+            game,
+            message,
+            links,
+            id
+          }
         }
       }
     }

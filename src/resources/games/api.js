@@ -11,6 +11,7 @@ module.exports = class gamesApi {
     // https://www.fastify.io/docs/v1.13.x/Reply/
     reply.header('Content-Type', 'application/json')
       .header('Cache-Control', 'no-cache')
+      .status(201)
     const { name, move } = request.body
     const id = uuidv4()
 
@@ -71,6 +72,7 @@ module.exports = class gamesApi {
     reply
       .header('Last-Modified', completeGame.lastModified)
       .header('Cache-Control', `max-age=${process.env.MAX_AGE}`)
+    delete completeGame.lastModified
     return { game: completeGame }
   }
 }

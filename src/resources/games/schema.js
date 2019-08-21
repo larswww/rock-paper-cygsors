@@ -12,11 +12,17 @@ const move = {
   'enum': ['rock', 'paper', 'scissors', 'Rock', 'Paper', 'Scissors', 'ROCK', 'PAPER', 'SCISSORS']
 }
 
+const outcome = {
+  'type': 'string',
+  'enum': ['WIN', 'TIE', 'LOSE']
+}
+
 const player = {
   'type': 'object',
   'properties': {
     move,
-    name
+    name,
+    outcome
   },
   'required': ['move', 'name']
 }
@@ -34,17 +40,9 @@ const game = {
   'properties': {
     'playerOne': player,
     'playerTwo': player,
+    message
   },
   'required': ['playerOne', 'playerTwo']
-}
-
-const responseWithGame = {
-  'type': 'object',
-  'properties': {
-    game,
-    message,
-    id
-  },
 }
 
 const links = {
@@ -59,4 +57,4 @@ const links = {
   }
 }
 
-module.exports = { player, responseWithGame, links, message }
+module.exports = { player, links, game, message, id }
