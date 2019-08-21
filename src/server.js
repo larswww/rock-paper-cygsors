@@ -3,7 +3,10 @@ const keyv = require('keyv') // https://github.com/lukechilds/keyv
 // https://www.fastify.io/docs/v1.13.x/Getting-Started/
 // https://www.fastify.io/docs/latest/Logging/
 // add/remove { logger: true } to require('fastify')({ logger: true}) to enable logging to console
-const fastify = require('fastify')({ logger: true })
+const fastify = require('fastify')({
+  ignoreTrailingSlash: true,
+  logger: true
+})
 const rateLimit = require('fastify-rate-limit')
 
 fastify.register(rateLimit, {
