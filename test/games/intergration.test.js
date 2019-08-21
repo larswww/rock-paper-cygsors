@@ -2,9 +2,9 @@ const chai = require('chai') // https://www.chaijs.com/api/
 const chaiHttp = require('chai-http') // https://www.chaijs.com/plugins/chai-http/
 chai.use(chaiHttp)
 const expect = chai.expect // https://www.chaijs.com/api/bdd/
-
 let url
 
+const controller = require('../../src/resources/games/api') // for injecting mock of model
 const playerOne = { name: 'Lars', move: 'rock' }
 const playerTwo = { name: 'KeyboardCat', move: 'scissors' }
 
@@ -19,18 +19,16 @@ describe('Games Intergration Tests', async () => {
     it('Should create a new game returning correct body and correct REST response', async () => {
       const res = await chai.request(url).post('/api/games').send({ name: 'Lars', move: 'rock' })
 
-      it('Status & Headers', async () => {
-        expect(res).to.have.status(201)
-        expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
-        expect(res).to.have.header('date')
-        expect(res).to.have.header('cache-control', 'no-cache')
-      })
+      expect(res).to.have.status(201)
+      expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
+      expect(res).to.have.header('date')
+      expect(res).to.have.header('cache-control', 'no-cache')
 
-      it('body', async () => {
-        expect(res.body).to.have.property('id')
-        expect(res.body).to.have.property('name')
-        expect(res.body).to.not.have.property('move')
-      })
+      expect(res.body).to.have.property('id')
+      expect(res.body).to.have.property('name')
+      expect(res.body).to.have.property('links')
+
+      expect(res.body).to.not.have.property('move')
     })
 
     it('Should return status 400 if body is bad input or missing', async () => {
@@ -64,6 +62,7 @@ describe('Games Intergration Tests', async () => {
       const res = await chai.request(url).get(`/api/games/${id}`)
 
       expect(res).to.have.status(200)
+
       expect(res.body.id).to.equal(id)
       expect(res.body).to.not.have.property('move')
       expect(res.body.message).to.equal(`${playerOne.name} is waiting for move!`)
@@ -72,56 +71,105 @@ describe('Games Intergration Tests', async () => {
     it('Should GET a finished game with correct body & headers', async () => {
       const resWithIdForGame = await postOneGame()
       const id = resWithIdForGame.body.id
+      expect(id.length).to.equal(36)
       await chai.request(url).put(`/api/games/${id}/move`).send(playerTwo)
-      const finishedGame = await chai.request(url).get(`/api/games/${id}`)
+      const res = await chai.request(url).get(`/api/games/${id}`)
 
-      expect(finishedGame).to.have.status(200)
-      expect(finishedGame).to.have.header('Last-Modified')
-      expect(finishedGame).to.have.header('Cache-Control', `max-age=${process.env.MAX_AGE}`)
-      expect(finishedGame.body).to.have.property('message')
-      expect(finishedGame.body).to.have.property('playerOne')
-      expect(finishedGame.body).to.have.property('playerTwo')
-      expect(finishedGame.body.playerOne.name).to.equal(playerOne.name)
-      expect(finishedGame.body.playerTwo.name).to.equal(playerTwo.name)
-    })
+      expect(res).to.have.status(200)
+      expect(res).to.have.header('Last-Modified')
+      expect(res).to.have.header('Cache-Control', `max-age=${process.env.MAX_AGE}`)
 
-    it('Should reply 404 for id of correct UUID length but with no game', async () => {
-      const idWithNoGame = 'shouldBe32CharsLongLikeUUID12345'
-      expect(idWithNoGame.length).to.equal(32)
-      const res = await chai.request(url).get(`/api/games/${idWithNoGame}`)
-
-      expect(res).to.have.status(404)
+      expect(res.body).to.have.property('game')
+      expect(res.body.game).to.have.property('playerOne')
+      expect(res.body.game).to.have.property('playerTwo')
+      expect(res.body.game.playerOne.name).to.equal(playerOne.name)
+      expect(res.body.game.playerTwo.name).to.equal(playerTwo.name)
     })
   })
 
   describe('PUT', async () => {
-    it('Should be idempotent i.e. subsequent repeat calls code is 200 not 201', async () => {
+    it('Should be idempotent i.e. subsequent repeat calls code is status 200 not 201', async () => {
       const game = await postOneGame()
-      const putPlayerTwoMove = await chai.request(url).put(`/api/games/${game.body.id}/move`).send(playerTwo)
-
-      expect(putPlayerTwoMove).to.have.status(201)
+      const res = await chai.request(url).put(`/api/games/${game.body.id}/move`).send(playerTwo)
+      expect(res).to.have.status(201)
       const identicalCall = await chai.request(url).put(`/api/games/${game.body.id}/move`).send(playerTwo)
       expect(identicalCall).to.have.status(200)
     })
 
     it('Should return game result after PUT correct input to existing game', async () => {
       const game = await postOneGame()
-      const putPlayerTwoMove = await chai.request(url).put(`/api/games/${game.body.id}/move`).send(playerTwo)
+      const res = await chai.request(url).put(`/api/games/${game.body.id}/move`).send(playerTwo)
 
-      expect(putPlayerTwoMove).to.have.status(201)
-      expect(putPlayerTwoMove.body).to.have.property('playerOne')
-      expect(putPlayerTwoMove.body).to.have.property('playerTwo')
-      expect(putPlayerTwoMove.body).to.have.property('message')
-      expect(putPlayerTwoMove.body.playerOne.outcome).to.equal('WIN')
-      expect(putPlayerTwoMove.body.playerTwo.outcome).to.equal('LOSE')
+      expect(res).to.have.status(201)
+
+      expect(res.body).to.have.property('game')
+      expect(res.body.game).to.have.property('playerOne')
+      expect(res.body.game).to.have.property('playerTwo')
+      expect(res.body.game).to.have.property('message')
+      expect(res.body.game.playerOne.outcome).to.equal('WIN')
+      expect(res.body.game.playerTwo.outcome).to.equal('LOSE')
     })
   })
 
-  after(() => {
-    process.exit(0)
+  describe('Output serialization', async () => {
+    /** https://www.fastify.io/docs/latest/Validation-and-Serialization/
+     *  Testing that the JSON Schemas in resources/games/schema.js are correctly formated and
+     *  prevents bad output as expected
+     */
+
+    describe('Does not output incomplete games', () => {
+      const completeGameIsNotActuallyComplete = {
+        hasGame: () => { return true },
+        gameIsWaitingForMove: () => { return false },
+        isCompletedGame: () => { return true },
+        getCompletedGame: () => {
+          return {
+            // hypothetical scenario where player ones move is shown but playerTwo has no move
+            playerOne, // contains {move}
+            playerTwo: {
+              name: 'Hasnt made move' // no move i.e. game would not yet be finished
+            }
+          }
+        }
+      }
+
+      it('GET', async () => {
+        controller.injectModel(completeGameIsNotActuallyComplete)
+        const res = await chai.request(url).get('/api/games/test')
+        expect(res).to.have.status(500)
+      })
+
+      it('PUT returning a game where playerTwo is missing', async () => {
+        completeGameIsNotActuallyComplete.getCompletedGame = () => {
+          return {
+            playerOne
+          }
+        }
+        controller.injectModel(completeGameIsNotActuallyComplete)
+
+        // the data sent is only to satisfy the input validation and wont be used due to the mock
+        const res = await chai.request(url).put('/api/games/id/move').send({ name: 'this wont ', move: 'rock' })
+        expect(res).to.have.status(500)
+        expect(res.body.message).to.be.equal('playerTwo is required!')
+      })
+    })
+
+    describe('Does not prevent links, message and id from being returned', () => {
+      it('Body without game should still pass through', async () => {
+        const mock = {
+          hasGame: () => { return true },
+          gameIsWaitingForMove: () => { return true },
+          getPlayerOneName: () => { return 'Lars' }
+        }
+        controller.injectModel(mock)
+        const res = await chai.request(url).get('/api/games/test')
+        expect(res).to.have.status(200)
+        expect(res.body).to.have.property('message')
+        expect(res.body).to.have.property('id')
+        expect(res.body).to.have.property('links')
+      })
+    })
   })
-
-
 })
 
 async function postOneGame () { return await chai.request(url).post('/api/games').send(playerOne) }

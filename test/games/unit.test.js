@@ -30,18 +30,12 @@ describe('Games Unit Tests', () => {
   })
 
   describe('model', () => {
-
     it('Should return true vs false if a game is complete', () => {
-      let res = model.gameIsComplete(({playerOne, playerTwo, message: 'game is complete'}))
+      let res = model.gameIsComplete(({ playerOne, playerTwo, message: 'game is complete' }))
       assert.equal(res, true)
 
-      res = model.gameIsComplete({playerOne: {}, playerTwo: {}, message: {}})
+      res = model.gameIsComplete({ playerOne: {}, playerTwo: {}, message: {} })
       assert.equal(res, false)
-
     })
-
-
   })
-
-
 })

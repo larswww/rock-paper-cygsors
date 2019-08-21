@@ -3,7 +3,6 @@ const gamesDao = require('./dao')
 const rockPaperScissors = require('sten-sax-pase')
 
 module.exports = class Games {
-
   static async setGame (id, { name, move }) {
     return await gamesDao.setGame(id, { playerOne: { name, move } })
   }
@@ -13,7 +12,7 @@ module.exports = class Games {
   }
 
   static async hasGame (id) {
-    let game = await this.getGame(id)
+    const game = await this.getGame(id)
     return !!game
   }
 
@@ -27,31 +26,29 @@ module.exports = class Games {
     return game
   }
 
-  static gameIsComplete({ playerOne, playerTwo, message }) {
+  static gameIsComplete ({ playerOne, playerTwo, message }) {
     return !!(playerOne.move && playerTwo.move && message)
   }
 
-  static async isCompleteGame(id) {
+  static async isCompletedGame (id) {
     const game = await this.getGame(id)
     return this.gameIsComplete(game)
   }
 
-  static async getCompleteGame(id) {
+  static async getCompletedGame (id) {
     const game = await this.getGame(id)
     if (!this.gameIsComplete(game)) throw new Error('Game not complete')
     return game
   }
 
-  static async gameIsWaitingForMove(id) {
+  static async gameIsWaitingForMove (id) {
     const { playerTwo } = await this.getGame(id)
     return !playerTwo
   }
 
-  static async getPlayerOneName(id) {
+  static async getPlayerOneName (id) {
     const { playerOne } = await this.getGame(id)
     if (!playerOne) throw Error('Player not found')
     return playerOne.name || ''
   }
-
 }
-

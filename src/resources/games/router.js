@@ -1,18 +1,48 @@
 'use strict'
 const controller = require('./api')
-const { player, game } = require('./schema')
+const model = require('./model')
+controller.injectModel(model)
+const { player, links, game, message, id } = require('./schema')
 
 module.exports = function (fastify, opts, next) {
   fastify.post('/', {
-    // https://www.fastify.io/docs/v1.13.x/Validation-and-Serialization/
-    schema: {
+    schema: { // https://www.fastify.io/docs/v1.13.x/Validation-and-Serialization/
       body: player
     }
-  }, controller.post)
+  }, controller.POST)
 
-  fastify.get('/:id',controller.get)
+  fastify.get('/:id', {
+    schema: {
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            game,
+            message,
+            links,
+            id
+          }
+        }
+      }
+    }
+  }, controller.GET)
 
-  fastify.put('/:id/move', controller.put)
+  fastify.put('/:id/move', {
+    schema: {
+      body: player,
+      response: {
+        '2xx': {
+          type: 'object',
+          properties: {
+            game,
+            message,
+            links,
+            id
+          }
+        }
+      }
+    }
+  }, controller.PUT)
 
   next()
 }
