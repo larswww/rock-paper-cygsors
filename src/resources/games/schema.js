@@ -1,6 +1,5 @@
 'use strict'
 // https://json-schema.org/
-//todo forgot outcome in the schema!
 const name = {
   'type': 'string',
   'minLength': 1,

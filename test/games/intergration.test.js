@@ -114,7 +114,7 @@ describe('Games Intergration Tests', async () => {
   describe('Output serialization', async () => {
     /** https://www.fastify.io/docs/latest/Validation-and-Serialization/
      *  Testing that the JSON Schemas in resources/games/schema.js are correctly formated and
-     *  prevents bad output as expected
+     *  prevents bad output as expected.
      */
 
     describe('Does not output incomplete games', () => {
@@ -127,7 +127,7 @@ describe('Games Intergration Tests', async () => {
             // hypothetical scenario where player ones move is shown but playerTwo has no move
             playerOne, // contains {move}
             playerTwo: {
-              name: 'Hasnt made move' // no move i.e. game would not yet be finished
+              name: 'Hasnt made move' // no {move} i.e. game would not yet be finished
             }
           }
         }

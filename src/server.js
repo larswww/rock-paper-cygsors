@@ -2,12 +2,17 @@
 const keyv = require('keyv') // https://github.com/lukechilds/keyv
 // https://www.fastify.io/docs/v1.13.x/Getting-Started/
 // https://www.fastify.io/docs/latest/Logging/
-// add/remove { logger: true } to require('fastify')({ logger: true}) to enable logging to console
 const fastify = require('fastify')({
   ignoreTrailingSlash: true,
-  logger: true
+  logger: true // https://github.com/fastify/fastify/blob/master/docs/Logging.md
 })
 const rateLimit = require('fastify-rate-limit')
+
+if (process.env.NODE_ENV === 'development') {
+  const cors = require('cors') // saved as a dev dependency in package.json
+  fastify.use(cors())
+  fastify.options('*', (request, reply) => { reply.send() })
+}
 
 fastify.register(rateLimit, {
   max: 100,

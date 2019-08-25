@@ -9,7 +9,8 @@ module.exports = class gamesApi {
 
   static async POST (request, reply) {
     // https://www.fastify.io/docs/v1.13.x/Reply/
-    reply.header('Content-Type', 'application/json')
+    reply
+      .header('Content-Type', 'application/json')
       .header('Cache-Control', 'no-cache')
       .status(201)
     const { name, move } = request.body
@@ -21,7 +22,8 @@ module.exports = class gamesApi {
   }
 
   static async PUT (request, reply) {
-    reply.header('Content-Type', 'application/json')
+    reply
+      .header('Content-Type', 'application/json')
       .header('Cache-Control', 'no-cache')
     const { id } = request.params
     const { name, move } = request.body
@@ -56,16 +58,17 @@ module.exports = class gamesApi {
       return { message: `No game with id ${id}` }
     }
 
-    reply.code(200)
+    reply
+      .code(200)
       .header('Content-Type', 'application/json')
 
     const shouldSendPlayerWaitingMessage = await games.gameIsWaitingForMove(id)
     if (shouldSendPlayerWaitingMessage) {
       reply.header('Cache-Control', 'no-cache')
-      const playerOneName = await games.getPlayerOneName(id)
-      const links = getHateoasLink(id)
-      const message = `${playerOneName} is waiting for move!`
-      return { message, id, links }
+      const playerOneName = await games.getPlayerOneName(id) // controller
+      const links = getHateoasLink(id) // controller
+      const message = `${playerOneName} is waiting for move!` // controller
+      return { message, id, links } // return
     }
 
     const completeGame = await games.getCompletedGame(id)
@@ -76,6 +79,7 @@ module.exports = class gamesApi {
     return { game: completeGame }
   }
 }
+
 
 function getHateoasLink (id) {
   return {

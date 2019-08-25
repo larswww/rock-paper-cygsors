@@ -4,7 +4,7 @@ let games
 /**
  * gamesDao is not async when using local in memory store i.e. 'new keyv()'
    - it is written as async anyway. So that if 'new keyv()' is passed a dynamoDb
- or Redis connection, and everything will still work in production without further changes
+ or Redis connection everything will still work in production without further changes.
  */
 
 module.exports = class gamesDao {
@@ -28,7 +28,7 @@ module.exports = class gamesDao {
 
   static async updateGame (id, update) {
     let game = await this.getGame(id)
-    if (!game) throw new Error('Cannot update: Game not found')
+    if (!game) throw new Error(`Cannot update: id ${id} not found`)
 
     game = {
       ...game,
