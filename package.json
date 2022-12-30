@@ -35,7 +35,7 @@
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "cors": "2.8.5",
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "standard": "^13.1.0"
   },
   "dependencies": {
